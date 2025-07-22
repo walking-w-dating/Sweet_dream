@@ -116,6 +116,26 @@
       <a href="index.html" class="comeback-button heart-icon">А может всё-таки...</a>
     </div>
   </div>
+ <audio autoplay loop style="display: none">
+    <source src="audio/sad_sound.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+  window.addEventListener('load', () => {
+    const audio = document.getElementById('audio-player');
+    audio.muted = false;
+    audio.play().catch(() => {
+      // если не получилось — покажем кнопку вручную
+      const btn = document.createElement('button');
+      btn.innerText = "▶ Включить музыку";
+      btn.className = "gift-button";
+      btn.style.marginTop = "20px";
+      btn.onclick = () => audio.play();
+      document.body.appendChild(btn);
+    });
+  });
+</script>  
+
+
 
   <script src="script.js"></script>
 </body>
