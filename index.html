@@ -2,57 +2,62 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Московские парки</title>
+  <title>walking ураа</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      margin: 0;
-      background: url('image/kreed_main.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-    }
-  </style>
 </head>
-<body class="landing">
+<body class="landing" data-emojis="love">
 
-  
   <div class="egor-wrapper">
-    <a href="egorkreed.html" class="egor-button">Егор Крид</a>
-    <div class="tooltip light-tooltip">Открывай глаза спящая красавица</div>
+    <a href="egorkreed.html" class="egor-button heart-icon pulse"> <!-- Добавлен класс pulse -->
+      Егор Крид
+      <div class="tooltip pulse">Открывай глаза спящая красавица👸👸</div> <!-- Добавлен класс pulse -->
+    </a>
   </div>
 
+  <div class="hearts-container" id="hearts-container"></div>
+
   <div class="overlay">
+    <div class="music-button-container">
+      <button id="play-audio" class="main-button play-icon pulse">Нажмиии сюда!!!</button>
+    </div>
     <div class="buttons">
       <div class="button-wrapper">
-        <a href="choise.html" class="main-button love-hover">Летс гоууу</a>
-        <div class="tooltip light-tooltip">Let's gooo Сююююда блин</div>
+        <a href="choise.html" class="main-button love-hover heart-icon pulse">Летс гоууу</a>
+        <div class="tooltip pulse">Летс гоу! Сююююююда блииин💅💅</div> <!-- Добавлен класс pulse -->
       </div>
       <div class="button-wrapper">
-        <a href="sadd.html" class="main-button sad-hover">Ноууу</a>
-        <div class="tooltip light-tooltip">Не кому не отвечаю... я остался 1</div>
+        <a href="sadd.html" class="main-button sad-hover sad-icon pulse">Ноууу</a>
+        <div class="tooltip pulse">Не кому не отвечаю... я остался 1 😔😔</div> <!-- Добавлен класс pulse -->
       </div>
     </div>
   </div>
 
- <audio autoplay loop style="display: none">
-    <source src="audio/egor_main.mp4" type="audio/mpeg">
-    </audio>
-    <script>
-  window.addEventListener('load', () => {
-    const audio = document.getElementById('audio-player');
-    audio.muted = false;
-    audio.play().catch(() => {
-      
-      const btn = document.createElement('button');
-      btn.innerText = "▶ Включить музыку";
-      btn.className = "gift-button";
-      btn.style.marginTop = "20px";
-      btn.onclick = () => audio.play();
-      document.body.appendChild(btn);
-    });
-  });
-</script>   
+  <audio id="audio-player" style="display: none">
+    <source src="audio/egor_main.mp3" type="audio/mpeg">
+  </audio>
 
+  <script>
+    const playBtn = document.getElementById('play-audio');
+    const audio = document.getElementById('audio-player');
+    
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        playBtn.classList.add('pulse');
+      } else {
+        audio.pause();
+        audio.currentTime = 0;
+        playBtn.classList.remove('pulse');
+      }
+    });
+    
+    // Остановка после окончания трека
+    audio.addEventListener('ended', () => {
+      audio.currentTime = 0;
+      playBtn.classList.remove('pulse');
+    });
+  </script>
+
+  <script src="script.js"></script>
 </body>
 </html>
