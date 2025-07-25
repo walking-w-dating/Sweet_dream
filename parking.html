@@ -9,7 +9,11 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
-
+    
+.lift-up {
+  transition: transform 0.3s ease;
+  transform: scale(1.03);
+}
 .hearts-container {
   position: fixed;
   top: 0;
@@ -172,72 +176,76 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Загрузка GeoJSON -->
-  <script>
-    const map = L.map('map').setView([55.75, 37.61], 11);
+ <script>
+  const map = L.map('map').setView([55.75, 37.61], 11);
 
-    // Добавим тайлы (фон карты)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    const defaultStyle = {
-      color: '#ff69b4',
-      weight: 2,
-      fillOpacity: 0.3
-    };
+  const defaultStyle = {
+    color: '#ff69b4',
+    weight: 2,
+    fillOpacity: 0.3
+  };
 
-    const hoverStyle = {
-      color: '#ff1493',
-      weight: 4,
-      fillOpacity: 0.6
-    };
+  const hoverStyle = {
+    color: '#ff1493',
+    weight: 4,
+    fillOpacity: 0.6,
+    className: 'hovered-zone'
+  };
 
-    function showModal() {
-      document.getElementById('modal').style.display = 'block';
-      document.getElementById('overlay').style.display = 'block';
-    }
+  function showModal() {
+    document.getElementById('modal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+  }
 
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-      document.getElementById('overlay').style.display = 'none';
-    }
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+  }
 
-    fetch('parking.json')
-      .then(res => res.json())
-      .then(data => {
-        L.geoJSON(data, {
-          style: defaultStyle,
-          onEachFeature: function (feature, layer) {
-            // Tooltip (название)
-            if (feature.properties && feature.properties.name) {
-              layer.bindTooltip(feature.properties.name, {
-                permanent: false,
-                direction: 'top',
-                offset: [0, -5],
-                opacity: 0.95,
-                className: 'custom-tooltip'
-              });
-            }
+  fetch('parking.json')
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: defaultStyle,
+        onEachFeature: function (feature, layer) {
+          // Извлечение имени из ключа
+          const parkName = Object.keys(feature.properties)
+            .find(key => key.toLowerCase() !== 'stroke' && key !== 'stroke-width' && key !== 'stroke-opacity' && key !== 'fill' && key !== 'fill-opacity');
 
-            // Наведение
-            layer.on('mouseover', function () {
-              this.setStyle(hoverStyle);
-              if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                this.bringToFront();
-              }
-            });
-
-            layer.on('mouseout', function () {
-              this.setStyle(defaultStyle);
-            });
-
-            // Клик
-            layer.on('click', function () {
-              showModal();
+          if (parkName) {
+            layer.bindTooltip(parkName, {
+              permanent: false,
+              direction: 'top',
+              offset: [0, -5],
+              opacity: 0.9,
+              className: 'custom-tooltip'
             });
           }
-        }).addTo(map);
-      });
-      
-  </script>
+
+          layer.on('mouseover', function () {
+            this.setStyle(hoverStyle);
+            this.getElement()?.classList.add('lift-up');
+            this.openTooltip();
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+              this.bringToFront();
+            }
+          });
+
+          layer.on('mouseout', function () {
+            this.setStyle(defaultStyle);
+            this.getElement()?.classList.remove('lift-up');
+            this.closeTooltip();
+          });
+
+          layer.on('click', function () {
+            showModal();
+          });
+        }
+      }).addTo(map);
+    });
+</script>
   <script src="script.js"></script>
 </body>
 </html>

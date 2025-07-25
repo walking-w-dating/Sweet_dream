@@ -4,7 +4,7 @@
     {
       "type": "Feature",
       "properties": {
-        "Sokolniki": "",
+        "Парк Сокольники": "",
         "stroke": "#b71f27",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -219,7 +219,7 @@
     {
       "type": "Feature",
       "properties": {
-        "visit kaluga": "",
+        "Молодой Калуга": "",
         "stroke": "#1fb745",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -298,7 +298,7 @@
     {
       "type": "Feature",
       "properties": {
-        "visit tver": "",
+        "Михаил Круг": "",
         "stroke": "#1fb745",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -489,7 +489,7 @@
     {
       "type": "Feature",
       "properties": {
-        "vdnx+ostankino": "",
+        "ВДНХ+Парк Останкино": "",
         "stroke": "#c4d926",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -640,7 +640,7 @@
     {
       "type": "Feature",
       "properties": {
-        "garden": "",
+        "Ботанический сад": "",
         "stroke": "#47c819",
         "fill": "#6aca1c"
       },
@@ -708,7 +708,7 @@
     {
       "type": "Feature",
       "properties": {
-        "china park": "",
+        "Китайский Парк+Японский": "",
         "stroke": "#d84e13",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -799,7 +799,7 @@
     {
       "type": "Feature",
       "properties": {
-        "gorki park": "",
+        "Парк Горького": "",
         "stroke": "#f5b80f",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -874,7 +874,7 @@
     {
       "type": "Feature",
       "properties": {
-        "kuzminki park": "",
+        "Парк Кузьминки": "",
         "stroke": "#cb23e1",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -997,7 +997,7 @@
     {
       "type": "Feature",
       "properties": {
-        "tsar park": "",
+        "Царицыно": "",
         "stroke": "#1fb745",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -1088,7 +1088,7 @@
     {
       "type": "Feature",
       "properties": {
-        "fili": "",
+        "Парк Фили": "",
         "stroke": "#545ee8",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -1167,7 +1167,7 @@
     {
       "type": "Feature",
       "properties": {
-        "streshka": "",
+        "Парк Стрешнево": "",
         "stroke": "#208ec5",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -1338,7 +1338,7 @@
     {
       "type": "Feature",
       "properties": {
-        "zaryad park": "",
+        "Парк Зарядье": "",
         "stroke": "#1fb745",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -1413,7 +1413,7 @@
     {
       "type": "Feature",
       "properties": {
-        "ismailovo": "",
+        "Парк Измайлово": "",
         "stroke": "#a7a5f3",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -1548,7 +1548,7 @@
     {
       "type": "Feature",
       "properties": {
-        "kolomns park": "",
+        "Коломинский Парк": "",
         "stroke": "#1fb745",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -1679,7 +1679,7 @@
     {
       "type": "Feature",
       "properties": {
-        "gori": "",
+        "Воробьевы Горы": "",
         "stroke": "#d24d14",
         "stroke-width": 3.6,
         "stroke-opacity": 1,
@@ -1790,7 +1790,7 @@
     {
       "type": "Feature",
       "properties": {
-        "Troparevo": ""
+        "Тропаревский Парк": ""
       },
       "geometry": {
         "coordinates": [
