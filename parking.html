@@ -4,43 +4,8 @@
   <meta charset="UTF-8">
   <title>Парковкиии</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
   <style>
-    
-.lift-up {
-  transition: transform 0.3s ease;
-  transform: scale(1.03);
-}
-.hearts-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 999;
-}
-
-.falling-emoji {
-  position: absolute;
-  top: 0;
-  animation-name: fall;
-  animation-timing-function: linear;
-  animation-iteration-count: 1;
-  color: white;
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(110vh) rotate(360deg);
-    opacity: 0;
-  }
-}
     :root {
       --pink: #ff69b4;
       --hotpink: #ff1493;
@@ -58,7 +23,6 @@
     .title {
       font-size: 2.5em;
       margin-top: 40px;
-      text-align: center;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -74,8 +38,8 @@
     }
 
     .title span:hover {
-      transform: scale(1.5);
-      color: #ff69b4;
+      transform: scale(1.3);
+      color: var(--pink);
     }
 
     #map {
@@ -140,26 +104,26 @@
 
     .overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.4);
       z-index: 999;
       display: none;
     }
 
-    /* Плавность при наведении */
     .leaflet-interactive {
-      transition: all 0.3s ease;
+      transition: transform 0.25s ease;
+    }
+
+    .lift-up {
+      transform: scale(1.01);
     }
   </style>
 </head>
 <body data-emojis="parking">
   <h1 class="title">
     <span>В</span><span>ы</span><span>б</span><span>е</span><span>р</span><span>и</span>
-    <span> </span>
-    <span>п</span><span>а</span><span>р</span><span>к</span>
+    <span> </span><span>п</span><span>а</span><span>р</span><span>к</span>
   </h1>
 
   <div id="map"></div>
@@ -167,85 +131,89 @@
   <!-- Модальное окно -->
   <div class="overlay" id="overlay"></div>
   <div class="modal" id="modal">
-    <h2>Ты действительно уверена?</h2>
+    <h2 id="modal-text">Ты действительно уверена?</h2>
     <button class="yes" onclick="location.href='confirm.html'">Да</button>
     <button class="no" onclick="closeModal()">Нет</button>
   </div>
 
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([55.75, 37.61], 11);
 
-  <!-- Загрузка GeoJSON -->
- <script>
-  const map = L.map('map').setView([55.75, 37.61], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    const defaultStyle = {
+      color: '#ff69b4',
+      weight: 2,
+      fillOpacity: 0.3
+    };
 
-  const defaultStyle = {
-    color: '#ff69b4',
-    weight: 2,
-    fillOpacity: 0.3
-  };
+    const hoverStyle = {
+      color: '#ff1493',
+      weight: 4,
+      fillOpacity: 0.5
+    };
 
-  const hoverStyle = {
-    color: '#ff1493',
-    weight: 4,
-    fillOpacity: 0.6,
-    className: 'hovered-zone'
-  };
+    const overlay = document.getElementById('overlay');
+    const modal = document.getElementById('modal');
+    const modalText = document.getElementById('modal-text');
 
-  function showModal() {
-    document.getElementById('modal').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
-  }
+    function showModal(parkName) {
+      modal.style.display = 'block';
+      overlay.style.display = 'block';
+      modalText.textContent = `Ты действительно уверена, что хочешь в ${parkName}?`;
+      localStorage.setItem('selectedPark', parkName);
+    }
 
-  function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
-  }
+    function closeModal() {
+      modal.style.display = 'none';
+      overlay.style.display = 'none';
+    }
 
-  fetch('parking.json')
-    .then(res => res.json())
-    .then(data => {
-      L.geoJSON(data, {
-        style: defaultStyle,
-        onEachFeature: function (feature, layer) {
-          // Извлечение имени из ключа
-          const parkName = Object.keys(feature.properties)
-            .find(key => key.toLowerCase() !== 'stroke' && key !== 'stroke-width' && key !== 'stroke-opacity' && key !== 'fill' && key !== 'fill-opacity');
+    fetch('parking.json')
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: defaultStyle,
+          onEachFeature: function (feature, layer) {
+            const parkName = Object.keys(feature.properties)
+              .find(key => !['stroke', 'stroke-width', 'stroke-opacity', 'fill', 'fill-opacity'].includes(key));
 
-          if (parkName) {
-            layer.bindTooltip(parkName, {
-              permanent: false,
-              direction: 'top',
-              offset: [0, -5],
-              opacity: 0.9,
-              className: 'custom-tooltip'
+            if (parkName) {
+              layer.bindTooltip(parkName, {
+                permanent: false,
+                direction: 'top',
+                offset: [0, -5],
+                opacity: 0.9,
+                className: 'custom-tooltip'
+              });
+            }
+
+            layer.on('mouseover', function () {
+              this.setStyle(hoverStyle);
+              const el = this.getElement();
+              if (el && !el.classList.contains('lift-up')) {
+                el.classList.add('lift-up');
+              }
+              this.openTooltip();
+            });
+
+            layer.on('mouseout', function () {
+              this.setStyle(defaultStyle);
+              this.getElement()?.classList.remove('lift-up');
+              this.closeTooltip();
+            });
+
+            layer.on('click', function () {
+              if (parkName) {
+                showModal(parkName);
+              }
             });
           }
+        }).addTo(map);
+      });
+  </script>
 
-          layer.on('mouseover', function () {
-            this.setStyle(hoverStyle);
-            this.getElement()?.classList.add('lift-up');
-            this.openTooltip();
-            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-              this.bringToFront();
-            }
-          });
-
-          layer.on('mouseout', function () {
-            this.setStyle(defaultStyle);
-            this.getElement()?.classList.remove('lift-up');
-            this.closeTooltip();
-          });
-
-          layer.on('click', function () {
-            showModal();
-          });
-        }
-      }).addTo(map);
-    });
-</script>
-  <script src="script.js"></script>
+  <script src="script.js"></script> <!-- Падающие эмоджи -->
 </body>
 </html>
