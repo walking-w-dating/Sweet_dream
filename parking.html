@@ -9,6 +9,34 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
+
+.hearts-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.falling-emoji {
+  position: absolute;
+  top: 0;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  color: white;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
     :root {
       --pink: #ff69b4;
       --hotpink: #ff1493;
@@ -23,24 +51,50 @@
       align-items: center;
     }
 
-    h1 {
+    .title {
+      font-size: 2.5em;
+      margin-top: 40px;
       text-align: center;
-      color: var(--pink);
-      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+      color: #ffffff;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+    }
+
+    .title span {
+      display: inline-block;
+      transition: transform 0.3s ease, color 0.3s ease;
+      cursor: default;
+    }
+
+    .title span:hover {
+      transform: scale(1.5);
+      color: #ff69b4;
     }
 
     #map {
       width: 1000px;
       height: 700px;
-      margin-top: 30px;
+      margin: 40px 0;
       border-radius: 15px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       position: relative;
     }
 
-    
     .leaflet-control-attribution {
       display: none !important;
+    }
+
+    .custom-tooltip {
+      background: rgba(255, 255, 255, 0.95);
+      color: #000;
+      font-weight: bold;
+      font-size: 0.85rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
     .modal {
@@ -91,44 +145,18 @@
       display: none;
     }
 
-
-    .title {
-  font-size: 2.5em;
-  margin-top: 40px;
-  text-align: center;
-  background: linear-gradient(90deg, #ff69b4, #ff1493, #ff69b4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shine 3s infinite linear;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-}
-
-.title span {
-  display: inline-block;
-  transition: transform 0.3s ease, color 0.3s ease;
-  cursor: default;
-}
-
-.title span:hover {
-  transform: scale(1.5);
-  color: var(--colorShadeA);
-}
-
-@keyframes shine {
-  0% { background-position: 0%; }
-  100% { background-position: 100%; }
-}
+    /* Плавность при наведении */
+    .leaflet-interactive {
+      transition: all 0.3s ease;
+    }
   </style>
 </head>
-<body>
+<body data-emojis="parking">
   <h1 class="title">
-  <span>В</span><span>ы</span><span>б</span><span>е</span><span>р</span><span>и</span>
-  <span> </span>
-  <span>п</span><span>а</span><span>р</span><span>к</span>
-</h1>
+    <span>В</span><span>ы</span><span>б</span><span>е</span><span>р</span><span>и</span>
+    <span> </span>
+    <span>п</span><span>а</span><span>р</span><span>к</span>
+  </h1>
 
   <div id="map"></div>
 
@@ -178,9 +206,20 @@
         L.geoJSON(data, {
           style: defaultStyle,
           onEachFeature: function (feature, layer) {
+            // Tooltip (название)
+            if (feature.properties && feature.properties.name) {
+              layer.bindTooltip(feature.properties.name, {
+                permanent: false,
+                direction: 'top',
+                offset: [0, -5],
+                opacity: 0.95,
+                className: 'custom-tooltip'
+              });
+            }
+
+            // Наведение
             layer.on('mouseover', function () {
               this.setStyle(hoverStyle);
-              this.openTooltip(); // показать подсказку при наведении
               if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                 this.bringToFront();
               }
@@ -188,25 +227,17 @@
 
             layer.on('mouseout', function () {
               this.setStyle(defaultStyle);
-              this.closeTooltip(); // убрать подсказку
             });
 
+            // Клик
             layer.on('click', function () {
               showModal();
             });
-
-            if (feature.properties && feature.properties.name) {
-              layer.bindTooltip(feature.properties.name, {
-                permanent: false,
-                direction: 'top',
-                offset: [0, -5],
-                opacity: 0.9,
-                className: 'custom-tooltip'
-              });
-            }
           }
         }).addTo(map);
       });
+      
   </script>
+  <script src="script.js"></script>
 </body>
 </html>
