@@ -6,6 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
+
+
+.hearts-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.falling-emoji {
+  position: absolute;
+  top: 0;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  color: white;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
     :root {
       --pink: #ff69b4;
       --hotpink: #ff1493;
@@ -120,7 +150,7 @@
     }
   </style>
 </head>
-<body data-emojis="parking">
+<body data-emojis= "parking" >
   <h1 class="title">
     <span>В</span><span>ы</span><span>б</span><span>е</span><span>р</span><span>и</span>
     <span> </span><span>п</span><span>а</span><span>р</span><span>к</span>
@@ -161,7 +191,7 @@
     function showModal(parkName) {
       modal.style.display = 'block';
       overlay.style.display = 'block';
-      modalText.textContent = `Ты действительно уверена, что хочешь в ${parkName}?`;
+      modalText.textContent = `Ты действительно уверена, что хочешь посетить ${parkName}?`;
       localStorage.setItem('selectedPark', parkName);
     }
 
@@ -214,6 +244,6 @@
       });
   </script>
 
-  <script src="script.js"></script> <!-- Падающие эмоджи -->
+  <script src="script.js"></script>
 </body>
 </html>
