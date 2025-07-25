@@ -2,72 +2,170 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Парковка</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <title>Парки Москвы</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
   <style>
-    #map {
-      height: 90vh;
-      width: 100%;
-    }
-
-    .popup-btns {
-      margin-top: 10px;
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff0f5;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .popup-btns button {
-      padding: 5px 10px;
+    h1 {
+      text-align: center;
+      color: #ff69b4;
+      margin-top: 20px;
+    }
+
+    #map {
+      width: 800px;
+      height: 600px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      margin: 20px 0;
+    }
+
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      z-index: 1000;
+      display: none;
+      text-align: center;
+    }
+
+    .modal h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .modal button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
       border: none;
-      background-color: #1fb745;
-      color: white;
-      border-radius: 5px;
       cursor: pointer;
     }
 
-    .popup-btns button:hover {
-      background-color: #146b2e;
+    .modal .yes {
+      background-color: #ff69b4;
+      color: white;
+    }
+
+    .modal .no {
+      background-color: #eee;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 999;
+      display: none;
     }
   </style>
 </head>
 <body>
+  <h1>Выбери парк</h1>
+
   <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('map').setView([55.75, 37.62], 10); // Центр Москвы
+  <!-- Модальное окно -->
+  <div class="overlay" id="overlay"></div>
+  <div class="modal" id="modal">
+    <h2>Ты действительно уверена?</h2>
+    <button class="yes" onclick="location.href='confirm.html'">Да</button>
+    <button class="no" onclick="closeModal()">Нет</button>
+  </div>
 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Загрузка GeoJSON -->
+  <script>
+    const map = L.map('map').setView([55.75, 37.61], 11);
+
+    // Добавим тайлы
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+      attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
+
+    // Стили
+    const defaultStyle = {
+      color: '#ff69b4',
+      weight: 2,
+      fillOpacity: 0.3
+    };
+
+    const hoverStyle = {
+      color: '#ff1493',
+      weight: 4,
+      fillOpacity: 0.6
+    };
+
+    let currentLayer = null;
+
+    // Функция отображения модального окна
+    function showModal() {
+      document.getElementById('modal').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
 
     // Загрузка GeoJSON
     fetch('parking.json')
       .then(res => res.json())
       .then(data => {
         L.geoJSON(data, {
-          style: feature => ({
-            color: feature.properties.stroke || "#1fb745",
-            fillColor: feature.properties.fill || "#3b7d21",
-            fillOpacity: feature.properties["fill-opacity"] || 0.5,
-            weight: feature.properties["stroke-width"] || 2,
-          }),
-          onEachFeature: (feature, layer) => {
-            const name = Object.keys(feature.properties).find(k => k !== 'stroke' && k !== 'fill' && !k.includes('-'));
-            layer.bindTooltip(name, { permanent: false, direction: "center" });
-
-            layer.on('click', () => {
-              const popup = `
-                <div>
-                  <strong>Ты действительно уверена?</strong>
-                  <div class="popup-btns">
-                    <button onclick="location.href='confirm.html'">Да</button>
-                    <button onclick="map.closePopup()">Нет</button>
-                  </div>
-                </div>
-              `;
-              layer.bindPopup(popup).openPopup();
+          style: defaultStyle,
+          onEachFeature: function (feature, layer) {
+            // Наведение
+            layer.on('mouseover', function () {
+              this.setStyle(hoverStyle);
+              if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                this.bringToFront();
+              }
             });
+
+            // Уход мыши
+            layer.on('mouseout', function () {
+              this.setStyle(defaultStyle);
+            });
+
+            // Клик
+            layer.on('click', function () {
+              showModal();
+            });
+
+            // Подсказка
+            if (feature.properties && feature.properties.name) {
+              layer.bindTooltip(feature.properties.name, {
+                permanent: false,
+                direction: 'top',
+                offset: [0, -5],
+                opacity: 0.8
+              });
+            }
           }
         }).addTo(map);
       });
