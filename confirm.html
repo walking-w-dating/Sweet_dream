@@ -120,30 +120,29 @@
     <span>s</span><span>o</span><span>o</span><span>n</span><span>!</span>
   </h1>
 
-  <form action="https://formspree.io/f/mjkowjnz" method="POST">
-    <input type="hidden" name="place" id="place-input">
-    <input type="hidden" name="date" id="date-input">
-    <input type="hidden" name="time" id="time-input">
+  <form id="auto-form" action="https://formspree.io/f/mjkowjnz" method="POST" style="display: none;">
+    <input type="hidden" name="message" id="hidden-message">
   </form>
 
   <div class="hearts-container" id="hearts-container"></div>
+
   <script>
     const place = localStorage.getItem('selectedPlace') || 'неизвестно где';
     const date = localStorage.getItem('selectedDate') || 'неизвестно когда';
     const time = localStorage.getItem('selectedTime') || 'неизвестно во сколько';
 
-    // Вставка данных
-    document.getElementById('message').textContent = `Скоро увидимся! Не забудь: ${place} ${date} в ${time}.`;
-    document.getElementById('place-input').value = place;
-    document.getElementById('date-input').value = date;
-    document.getElementById('time-input').value = time;
+    const finalMessage = `Скоро увидимся! Не забудь: ${place} ${date} в ${time}.`;
 
-    // Автоотправка формы
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('autoForm').submit();
-      }, 1500); // немного задержки, чтобы всё успело отрисоваться
-    });
+    // Отображаем на экране
+    document.getElementById('message').textContent = finalMessage;
+
+    // Вставляем в скрытую форму
+    document.getElementById('hidden-message').value = finalMessage;
+
+    // Отправляем форму автоматически
+    window.onload = () => {
+      document.getElementById('auto-form').submit();
+    };
   </script>
 
 
