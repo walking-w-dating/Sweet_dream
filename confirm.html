@@ -126,24 +126,37 @@
 
   <div class="hearts-container" id="hearts-container"></div>
 
-  <script>
-    const place = localStorage.getItem('selectedPlace') || 'неизвестно где';
-    const date = localStorage.getItem('selectedDate') || 'неизвестно когда';
-    const time = localStorage.getItem('selectedTime') || 'неизвестно во сколько';
+ <script>
+  const place = localStorage.getItem('selectedPlace') || 'неизвестно где';
+  const date = localStorage.getItem('selectedDate') || 'неизвестно когда';
+  const time = localStorage.getItem('selectedTime') || 'неизвестно во сколько';
 
-    const finalMessage = `Скоро увидимся! Не забудь: ${place} ${date} в ${time}.`;
+  const finalMessage = `Скоро увидимся! Не забудь: ${place} ${date} в ${time}.`;
+  document.getElementById('message').textContent = finalMessage;
 
-    // Отображаем на экране
-    document.getElementById('message').textContent = finalMessage;
-
-    // Вставляем в скрытую форму
-    document.getElementById('hidden-message').value = finalMessage;
-
-    // Отправляем форму автоматически
-    window.onload = () => {
-      document.getElementById('auto-form').submit();
-    };
-  </script>
+  
+  window.onload = () => {
+    fetch("https://formspree.io/f/mjkowjnz", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: finalMessage
+      })
+    }).then(response => {
+      if (response.ok) {
+        console.log("Форма успешно отправлена!");
+        // можно показать сообщение или эмоджи ✨
+      } else {
+        console.error("Ошибка при отправке формы");
+      }
+    }).catch(error => {
+      console.error("Сбой сети:", error);
+    });
+  };
+</script>
 
 
 
