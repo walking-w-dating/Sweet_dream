@@ -148,6 +148,63 @@
     .lift-up {
       transform: scale(1.01);
     }
+
+
+    .custom-place-wrapper {
+  position: absolute;
+  top: 145px;
+  right: 57px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.custom-place-trigger {
+  background-color: #555;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.custom-place-trigger:hover {
+  background-color: #ff69b4;
+}
+
+.custom-place-form {
+  display: none;
+  flex-direction: column;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.custom-place-form input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  width: 200px;
+}
+
+.custom-place-form button {
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.custom-place-form button:hover {
+  background-color: #ff1493;
+}
   </style>
 </head>
 <body data-emojis= "parking" >
@@ -165,6 +222,15 @@
     <button class="yes" onclick="location.href='time.html'">Да</button>
     <button class="no" onclick="closeModal()">Нет</button>
   </div>
+
+   <div class="custom-place-wrapper">
+  <div class="custom-place-trigger">Нет нужного места??</div>
+  <div class="custom-place-form">
+    <label for="customPlace">Предложить свое:</label>
+    <input type="text" id="customPlace" placeholder="Напиши место..."/>
+    <button onclick="saveCustomPlace()">OK</button>
+  </div>
+</div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
@@ -242,6 +308,7 @@
           }
         }).addTo(map);
       });
+
   </script>
 
   <audio autoplay loop style="display: none">
@@ -262,6 +329,29 @@
     });
   });
 </script> 
+
+<script>
+  const trigger = document.querySelector('.custom-place-trigger');
+  const form = document.querySelector('.custom-place-form');
+
+  trigger.addEventListener('mouseenter', () => {
+    form.style.display = 'flex';
+  });
+
+  form.addEventListener('mouseleave', () => {
+    form.style.display = 'none';
+  });
+
+  function saveCustomPlace() {
+    const custom = document.getElementById('customPlace').value.trim();
+    if (custom) {
+      localStorage.setItem('selectedPlace', custom);
+      alert("Твое место сохранено 💖");
+    } else {
+      alert("Напиши что-нибудь!");
+    }
+  }
+</script>
 
   <script src="script.js"></script>
 </body>
