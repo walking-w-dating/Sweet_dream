@@ -144,19 +144,19 @@
   <div class="hearts-container" id="hearts-container"></div>
 
   <script>
-    function saveDateTime() {
-      const date = document.getElementById('date').value;
-      const time = document.getElementById('time').value;
+     function saveDateTime() {
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
 
-      if (!date || !time) {
-        alert("Пожалуйста, выбери и дату, и время!");
-        return;
-      }
-
-      const datetime = `${date} ${time}`;
-      localStorage.setItem('selectedDateTime', datetime);
-      location.href = 'confirm.html';
+    if (!date || !time) {
+      alert("Пожалуйста, выбери и дату, и время!");
+      return;
     }
+    // Сохраняем раздельно
+    localStorage.setItem('selectedDate', date);
+    localStorage.setItem('selectedTime', time);
+    location.href = 'confirm.html';
+  }
   </script>
 
   <script src="script.js"></script>
