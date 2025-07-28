@@ -152,9 +152,9 @@
 
     .custom-place-wrapper {
   position: absolute;
-  top: 160px;
-  right: 220px;
-  z-index: 1001;
+  top: 5px;
+  right: 5px;
+  z-index: 500;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -213,7 +213,16 @@
     <span>  </span><span> </span><span>п</span><span>а</span><span>р</span><span>к</span>
   </h1>
 
-  <div id="map"></div>
+  <div id="map">
+    <div class="custom-place-wrapper">
+  <div class="custom-place-trigger">Нет нужного места??</div>
+  <div class="custom-place-form">
+    <label for="customPlace">Предложи свое:</label>
+    <input type="text" id="customPlace" placeholder="Напиши место..."/>
+    <button onclick="saveCustomPlace()">OK</button>
+  </div>
+</div>
+  </div>
 
   
   <div class="overlay" id="overlay"></div>
@@ -223,14 +232,7 @@
     <button class="no" onclick="closeModal()">Нет</button>
   </div>
 
-   <div class="custom-place-wrapper">
-  <div class="custom-place-trigger">Нет нужного места??</div>
-  <div class="custom-place-form">
-    <label for="customPlace">Предложи свое:</label>
-    <input type="text" id="customPlace" placeholder="Напиши место..."/>
-    <button onclick="saveCustomPlace()">OK</button>
-  </div>
-</div>
+   
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
